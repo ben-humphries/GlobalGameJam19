@@ -150,6 +150,9 @@ int main()
 							window.close();
 						}
 					}
+					else if (event.key.code == sf::Keyboard::Escape) {
+						window.close();
+					}
 				}
 
 				else if (isShowingScore) {

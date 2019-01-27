@@ -25,6 +25,8 @@ Bullet::Bullet(Direction dir, sf::Vector2f position)
 	sprite.setTexture(texture);
 
 	collider = Collider(0, 0, 4, 4);
+
+	sprite.setColor(sf::Color(247, 222, 13));
 }
 
 
