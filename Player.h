@@ -1,13 +1,7 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 #include "AnimatedSprite.h"
-
-enum Direction {
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT
-};
+#include "common.h"
 
 class Player : public AnimatedSprite
 {

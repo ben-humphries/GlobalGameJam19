@@ -1,13 +1,15 @@
 #include <SFML/Graphics.hpp>
 #include "Player.h"
-#include "Animation.h"
+#include "Zombie.h"
 
 #define SCREEN_SIZE 800.f
 #define GAME_SIZE 128.f
 
 //VARIABLE DEFINITIONS
-Player player = Player();
 sf::View view(sf::FloatRect(0, 0, GAME_SIZE, GAME_SIZE));
+
+Player player = Player();
+Zombie zombie = Zombie(&player);
 
 int main()
 {
@@ -62,11 +64,13 @@ int main()
 
 		//UPDATE
 		player.update(dt);
+		zombie.update(dt);
 
 		//DRAW
 		window.setView(view);
 		window.clear();
 		window.draw(player);
+		window.draw(zombie);
 		window.display();
 	}
 

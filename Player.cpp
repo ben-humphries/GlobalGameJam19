@@ -1,8 +1,5 @@
 #include "Player.h"
 
-#define I(x, y, w, h) sf::IntRect(x, y, w, h)
-
-#define FRAME_RATE 1.f / 8.f
 
 Player::Player() : AnimatedSprite(sf::seconds(FRAME_RATE))
 {
