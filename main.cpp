@@ -3,6 +3,8 @@
 #include "Zombie.h"
 #include "Bullet.h"
 
+#include <list>
+
 #define SCREEN_SIZE 800.f
 #define GAME_SIZE 200.f
 
@@ -10,12 +12,9 @@
 sf::View view(sf::FloatRect(0, 0, GAME_SIZE, GAME_SIZE));
 
 Player player = Player();
-Zombie zombie = Zombie(&player);
 
-std::vector<Bullet> bullets;
-
-sf::RectangleShape r1;
-sf::RectangleShape r2;
+std::list<Bullet> bullets;
+std::list<Zombie> zombies;
 
 int main()
 {
@@ -29,6 +28,7 @@ int main()
 	player.setPosition(GAME_SIZE / 2, GAME_SIZE / 2);
 
 	//MAIN LOOP
+	float elapsedTime = 0.f;
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -60,6 +60,7 @@ int main()
 		}
 
 		sf::Time dt = clock.restart();
+		elapsedTime += dt.asSeconds();
 
 		//INPUT
 		sf::Vector2i to_move = sf::Vector2i(0, 0);
@@ -80,36 +81,63 @@ int main()
 
 
 		//UPDATE
+
+		if (elapsedTime >= 1.0f) {
+			Zombie * zombie = new Zombie(&player);
+			zombies.push_back(*zombie);
+			elapsedTime = 0;
+		}
+
 		player.update(dt);
-		zombie.update(dt);
 
-		for (int i = 0; i < bullets.size(); i++) {
-			bullets[i].update(dt);
-			if (colliding(bullets[i].collider, zombie.collider, bullets[i].getPosition(), zombie.getPosition())) {
-				//printf("Colliding\n");
+		std::list<Zombie>::iterator z_it = zombies.begin();
+		while (z_it != zombies.end())
+		{
+			(*z_it).update(dt);
+			z_it++;
+		}
+
+		std::list<Bullet>::iterator it = bullets.begin();
+		while (it != bullets.end())
+		{
+
+			sf::Vector2f bulletPos = (*it).getPosition();
+
+			if (bulletPos.x > GAME_SIZE + 10 || bulletPos.x < -10 || bulletPos.y > GAME_SIZE + 10 || bulletPos.y < -10) {
+				bullets.erase(it++);
 			}
-		}
+			(*it).update(dt);
 
-		if (bullets.size() > 0) {
-			r1.setSize(sf::Vector2f(bullets[bullets.size() -1].collider.width, bullets[bullets.size() -1].collider.height));
-			r1.setPosition(bullets[bullets.size() -1].getPosition());
-			r1.setFillColor(sf::Color::Red);
-		}
-		r2.setSize(sf::Vector2f(zombie.collider.width, zombie.collider.height));
+			z_it = zombies.begin();
+			while (z_it != zombies.end())
+			{
+				if (colliding((*it).collider, (*z_it).collider, (*it).getPosition(), (*z_it).getPosition())) {
+					zombies.erase(z_it++);
+				}
+				++z_it;
+			}
 
-		r2.setPosition(zombie.getPosition());
+			++it;
+		}
 
 		//DRAW
 		window.setView(view);
 		window.clear();
 
 		window.draw(player);
-		window.draw(zombie);
-		window.draw(r1);
-		window.draw(r2);
 
-		for (int i = 0; i < bullets.size(); i++) {
-			window.draw(bullets[i]);
+		z_it = zombies.begin();
+		while (z_it != zombies.end())
+		{
+			window.draw(*z_it);
+			z_it++;
+		}
+
+		it = bullets.begin();
+		while (it != bullets.end())
+		{
+			window.draw(*it);
+			it++;
 		}
 
 		window.display();

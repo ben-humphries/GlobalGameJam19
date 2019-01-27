@@ -23,8 +23,6 @@ bool colliding(Collider col1, Collider col2, sf::Vector2f pos1, sf::Vector2f pos
 		col1.left + col1.width > col2.left &&
 		col1.top < col2.top + col2.height &&
 		col1.top + col1.height > col2.top) {
-		printf("%f  %f  %f  %f\n", col1.left, col1.top, col1.width, col1.height);
-
 		return true;
 	}
 	return false;
