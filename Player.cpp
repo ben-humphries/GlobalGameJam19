@@ -46,10 +46,59 @@ Player::Player() : AnimatedSprite(sf::seconds(FRAME_RATE))
 	left.addFrame(I(60, 30, 9, 15));
 	left.addFrame(I(70, 30, 9, 15));
 
-	play(left);
+	idle_up = Animation();
+	idle_up.setSpriteSheet(player_spritesheet);
+	idle_up.addFrame(I(5, 0, 5, 15));
+
+	idle_down = Animation();
+	idle_down.setSpriteSheet(player_spritesheet);
+	idle_down.addFrame(I(25, 0, 5, 15));
+
+	idle_left = Animation();
+	idle_left.setSpriteSheet(player_spritesheet);
+	idle_left.addFrame(I(60, 0, 9, 15));
+
+	idle_right = Animation();
+	idle_right.setSpriteSheet(player_spritesheet);
+	idle_right.addFrame(I(70, 0, 9, 15));
+
+	current_animation = idle_down; //idle
+	current_dir = DOWN;
+	play(current_animation);
 }
 
 
 Player::~Player()
 {
+}
+
+void Player::move(sf::Vector2i move_dir, sf::Time dt)
+{
+	float speed = 50;
+	AnimatedSprite::move((sf::Vector2f) move_dir * speed * dt.asSeconds());
+
+	if (move_dir.x == -1) { current_animation = left; current_dir = LEFT; }
+	else if (move_dir.x == 1) { current_animation = right; current_dir = RIGHT; }
+	else if (move_dir.y == -1) { current_animation = up; current_dir = UP; }
+	else if (move_dir.y == 1) { current_animation = down; current_dir = DOWN; }
+
+	if (move_dir.x == 0 && move_dir.y == 0) {
+		switch (current_dir) {
+		case UP:
+			current_animation = idle_up;
+			break;
+		case DOWN:
+			current_animation = idle_down;
+			break;
+		case LEFT:
+			current_animation = idle_left;
+			break;
+		case RIGHT:
+			current_animation = idle_right;
+			break;
+		default:
+			printf("Something went wrong in player animation\n");
+		}
+	}
+
 }

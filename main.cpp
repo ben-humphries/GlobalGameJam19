@@ -3,7 +3,7 @@
 #include "Animation.h"
 
 #define SCREEN_SIZE 800.f
-#define GAME_SIZE 64.f
+#define GAME_SIZE 128.f
 
 //VARIABLE DEFINITIONS
 Player player = Player();
@@ -27,8 +27,22 @@ int main()
 		sf::Time dt = clock.restart();
 
 		//INPUT
+		sf::Vector2i to_move = sf::Vector2i(0, 0);
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+			to_move.y -= 1;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+			to_move.x -= 1;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+			to_move.y += 1;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+			to_move.x += 1;
+		}
+		player.move(to_move, dt);
 
-		
+
 		//UPDATE
 		player.update(dt);
 
