@@ -4,6 +4,7 @@ Zombie::Zombie(Player * target) : AnimatedSprite(sf::seconds(FRAME_RATE))
 {
 
 	this->target = target;
+	collider = Collider(0, 0, 5, 15);
 
 	if (!zombie_spritesheet.loadFromFile("res/zombie_spritesheet.png")) {
 		printf("Couldn't load zombie's spritesheet...\n");

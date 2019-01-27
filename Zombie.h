@@ -13,6 +13,8 @@ public:
 
 	void update(sf::Time dt);
 
+	Collider collider;
+
 private:
 	sf::Texture zombie_spritesheet;
 	Animation up, down, left, right;
