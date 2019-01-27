@@ -23,10 +23,26 @@ sf::Sprite light_sprite;
 sf::RenderTexture lightmap_texture;
 sf::Sprite lightmap_sprite;
 
+sf::Font font;
+sf::Text score_text;
+
+sf::Texture home_texture;
+sf::Sprite home_sprite;
+
+int score = 0;
 
 bool isDead = false;
 
 void reset();
+
+bool isMenu = true;
+bool isShowingScore = false;
+
+float zombie_time = 10.f;
+float elapsed_time = 0.0f;
+float spawn_rate = 0.0f;
+
+int selected = PLAY;
 
 int main()
 {
@@ -37,7 +53,7 @@ int main()
 
 	sf::Clock clock;
 
-	player.setPosition(GAME_SIZE / 2, GAME_SIZE / 2);
+	player.setPosition(GAME_SIZE / 2 - 3, GAME_SIZE / 2 - 7);
 
 	if (!background_texture.loadFromFile("res/background_f.png")) {
 		printf("Couldn't load background texture\n");
@@ -54,10 +70,36 @@ int main()
 	light_sprite.setTexture(light_texture);
 	light_sprite.setOrigin(25, 25);
 
+	font.loadFromFile("res/BEBAS.ttf");
+	score_text = sf::Text("Score: ", font);
+	score_text.setCharacterSize(10);
+	score_text.setPosition(0, 0);
+
+	if (!home_texture.loadFromFile("res/home.png")) {
+		printf("Couldn't load home texture...\n");
+	}
+	home_sprite.setTexture(home_texture);
+	home_sprite.setOrigin(5, 5);
+	home_sprite.setPosition(GAME_SIZE / 2, GAME_SIZE / 2);
+
+	sf::Text play_text = sf::Text("PLAY", font);
+	play_text.setPosition(GAME_SIZE / 2, GAME_SIZE / 2 + 20);
+	play_text.setCharacterSize(20);
+	play_text.setOrigin(play_text.getGlobalBounds().width / 2, play_text.getGlobalBounds().height / 2);
+
+	sf::Text quit_text = sf::Text("QUIT", font);
+	quit_text.setPosition(GAME_SIZE / 2, GAME_SIZE / 2 + 60);
+	quit_text.setCharacterSize(20);
+	quit_text.setOrigin(quit_text.getGlobalBounds().width / 2, quit_text.getGlobalBounds().height / 2);
+
+	sf::Text title_text = sf::Text("HOME  MEANS\nFIGHTING  OFF\nTHE  ZOMBIE\nAPOCALYPSE", font);
+	title_text.setPosition(GAME_SIZE / 2, GAME_SIZE / 2 + - 40);
+	title_text.setCharacterSize(15);
+	title_text.setOrigin(title_text.getGlobalBounds().width / 2, title_text.getGlobalBounds().height / 2);
+	title_text.setFillColor(sf::Color::Black);
+
+
 	//MAIN LOOP
-	float zombie_time = 10.f;
-	float elapsed_time = 0.0f;
-	float spawn_rate = 0.0f;
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -67,25 +109,108 @@ int main()
 				window.close();
 			if (event.type == sf::Event::KeyPressed) {
 
-				if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) {
-					anim_priority = sf::Vector2i(0, -1);
+				if (!isMenu && !isShowingScore) {
+					if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) {
+						anim_priority = sf::Vector2i(0, -1);
+					}
+					else if (event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left) {
+						anim_priority = sf::Vector2i(-1, 0);
+					}
+					else if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
+						anim_priority = sf::Vector2i(0, 1);
+					}
+					else if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
+						anim_priority = sf::Vector2i(1, 0);
+					}
+
+					else if (event.key.code == sf::Keyboard::Space) {
+						Bullet b = Bullet(player.current_dir, player.getPosition());
+						bullets.push_back(b);
+					}
+
+					else if (event.key.code == sf::Keyboard::Escape) {
+						isMenu = true;
+					}
 				}
-				else if (event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left) {
-					anim_priority = sf::Vector2i(-1, 0);
-				}
-				else if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
-					anim_priority = sf::Vector2i(0, 1);
-				}
-				else if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
-					anim_priority = sf::Vector2i(1, 0);
+				else if (isMenu){
+					if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) {
+						selected--;
+						if (selected < 0) selected = 1;
+					}
+					else if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) {
+						selected++;
+						if (selected > 1) selected = 0;
+					}
+					else if (event.key.code == sf::Keyboard::Enter) {
+						if (selected == PLAY) {
+							reset();
+							isMenu = false;
+						}
+						else if (selected == QUIT) {
+							window.close();
+						}
+					}
 				}
 
-				else if (event.key.code == sf::Keyboard::Space) {
-					Bullet b = Bullet(player.current_dir, player.getPosition());
-					bullets.push_back(b);
+				else if (isShowingScore) {
+					if (event.key.code == sf::Keyboard::Escape) {
+						isMenu = true;
+						reset();
+					}
+
+					else if (event.key.code == sf::Keyboard::Enter) {
+						reset();
+					}
+				}
+			}
+			else if (event.type == sf::Event::KeyReleased) {
+				if (!isMenu) {
+					if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up ||
+						event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left ||
+						event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down ||
+						event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) {
+						anim_priority = sf::Vector2i(0, 0);
+					}
 				}
 			}
 		}
+
+		if (isMenu) {
+
+			if (selected == PLAY) {
+				play_text.setFillColor(sf::Color::White);
+				play_text.setCharacterSize(25);
+				play_text.setOrigin(play_text.getGlobalBounds().width / 2, play_text.getGlobalBounds().height / 2);
+			}
+			else {
+				play_text.setFillColor(sf::Color::Black);
+				play_text.setCharacterSize(20);
+				play_text.setOrigin(play_text.getGlobalBounds().width / 2, play_text.getGlobalBounds().height / 2);
+			}
+
+			if (selected == QUIT) {
+				quit_text.setFillColor(sf::Color::White);
+				quit_text.setCharacterSize(25);
+				quit_text.setOrigin(quit_text.getGlobalBounds().width / 2, quit_text.getGlobalBounds().height / 2);
+			}
+			else {
+				quit_text.setFillColor(sf::Color::Black);
+				quit_text.setCharacterSize(20);
+				quit_text.setOrigin(quit_text.getGlobalBounds().width / 2, quit_text.getGlobalBounds().height / 2);
+			}
+
+			window.setView(view);
+			window.clear(sf::Color(107, 74, 38));
+			window.draw(title_text);
+			background_sprite.setColor(sf::Color(255, 255, 255));
+			window.draw(background_sprite);
+			window.draw(play_text);
+			window.draw(quit_text);
+			window.display();
+			continue;
+		}
+		
+
 		sf::Time dt = clock.restart();
 		zombie_time += dt.asSeconds();
 		elapsed_time += dt.asSeconds();
@@ -101,22 +226,24 @@ int main()
 		}
 
 		//INPUT
-		sf::Vector2i to_move = sf::Vector2i(0, 0);
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-			to_move.y -= 1;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-			to_move.x -= 1;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-			to_move.y += 1;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-			to_move.x += 1;
-		}
 
-		player.move(to_move, anim_priority, dt);
+		if (!isShowingScore) {
+			sf::Vector2i to_move = sf::Vector2i(0, 0);
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+				to_move.y -= 1;
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+				to_move.x -= 1;
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+				to_move.y += 1;
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+				to_move.x += 1;
+			}
 
+			player.move(to_move, anim_priority, dt);
+		}
 
 		//UPDATE
 
@@ -172,6 +299,7 @@ int main()
 			{
 				if (colliding((*it).collider, (*z_it).collider, (*it).getPosition(), (*z_it).getPosition())) {
 					zombies.erase(z_it++);
+					score++;
 				}
 				++z_it;
 			}
@@ -180,10 +308,16 @@ int main()
 
 		//DRAW
 		lightmap_texture.clear(sf::Color(100, 100, 100));
+		score_text.setString("Score: " + std::to_string(score));
 		window.setView(view);
 		window.clear(sf::Color(107,74,38));
 
-		window.draw(player);
+		window.draw(home_sprite);
+
+		if (!isShowingScore) {
+			window.draw(player);
+		}
+
 		light_sprite.setPosition(player.getPosition().x + 3, GAME_SIZE - player.getPosition().y - 7);
 		light_sprite.setScale(2.0, 2.0);
 		lightmap_texture.draw(light_sprite, sf::BlendAdd);
@@ -211,11 +345,14 @@ int main()
 		background_sprite.setColor(sf::Color(100, 100, 100));
 		window.draw(background_sprite);
 
-
+		if (isShowingScore) {
+			score_text.setPosition(GAME_SIZE / 2 - score_text.getGlobalBounds().width / 2, GAME_SIZE / 2 - score_text.getGlobalBounds().height / 2 - 30);
+		}
+		window.draw(score_text);
 		window.display();
 
 		if (isDead)
-			reset();
+			isShowingScore = true;
 	}
 
 	return 0;
@@ -225,6 +362,13 @@ void reset()
 {
 	bullets.clear();
 	zombies.clear();
-	player.setPosition(GAME_SIZE / 2, GAME_SIZE / 2);
+	score = 0;
+	player.setPosition(GAME_SIZE / 2 - 3, GAME_SIZE / 2 - 7);
 	isDead = false;
+	elapsed_time = 0;
+	zombie_time = 0;
+	spawn_rate = 0.0;
+	selected = PLAY;
+	score_text.setPosition(0, 0);
+	isShowingScore = false;
 }

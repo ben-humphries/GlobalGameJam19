@@ -8,6 +8,11 @@ enum Direction {
 	RIGHT
 };
 
+enum MenuButton {
+	PLAY,
+	QUIT
+};
+
 #define I(x, y, w, h) sf::IntRect(x, y, w, h)
 #define Collider sf::FloatRect
 

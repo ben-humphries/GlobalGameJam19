@@ -3,6 +3,11 @@
 Zombie::Zombie(Player * target) : AnimatedSprite(sf::seconds(FRAME_RATE))
 {
 
+	if (random_float(0, 10) <= 1) {
+		speed = 40;
+		this->setColor(sf::Color(255, 0, 0));
+	}
+
 	this->target = target;
 	collider = Collider(0, 0, 5, 15);
 
@@ -57,7 +62,6 @@ void Zombie::update(sf::Time dt)
 
 	AnimatedSprite::update(dt);
 
-	float speed = 20;
 
 	sf::Vector2f player_dir = normalize(target->getPosition() - this->getPosition());
 	move(player_dir * speed * dt.asSeconds());

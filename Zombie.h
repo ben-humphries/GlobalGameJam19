@@ -21,6 +21,7 @@ private:
 	Animation * current_animation;
 
 	Direction current_dir;
+	float speed = 20;
 
 	Player * target;
 };
