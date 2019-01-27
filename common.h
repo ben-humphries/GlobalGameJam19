@@ -13,6 +13,9 @@ enum Direction {
 
 #define FRAME_RATE 1.f / 8.f
 
+#define SCREEN_SIZE 800.f
+#define GAME_SIZE 200.f
+
 sf::Vector2f normalize(sf::Vector2f v);
 
 bool colliding(Collider col1, Collider col2, sf::Vector2f pos1, sf::Vector2f pos2);

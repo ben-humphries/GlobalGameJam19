@@ -7,6 +7,8 @@ Player::Player() : AnimatedSprite(sf::seconds(FRAME_RATE))
 		printf("Couldn't load player's spritesheet...\n");
 	}
 
+	collider = Collider(1, 3, 2, 5);
+
 	up = Animation();
 	up.setSpriteSheet(player_spritesheet);
 	up.addFrame(I( 0, 0, 5, 15));
@@ -99,5 +101,10 @@ void Player::move(sf::Vector2i move_dir, sf::Vector2i anim_priority, sf::Time dt
 			printf("Something went wrong in player animation\n");
 		}
 	}
+
+	if (getPosition().x > GAME_SIZE) setPosition(GAME_SIZE, getPosition().y);
+	else if (getPosition().x < 0) setPosition(0, getPosition().y);
+	if (getPosition().y > GAME_SIZE) setPosition(getPosition().x, GAME_SIZE);
+	else if (getPosition().y < 0) setPosition(getPosition().x, 0);
 
 }

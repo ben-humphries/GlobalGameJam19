@@ -62,7 +62,7 @@ void Zombie::update(sf::Time dt)
 	sf::Vector2f player_dir = normalize(target->getPosition() - this->getPosition());
 	move(player_dir * speed * dt.asSeconds());
 
-	if (player_dir.x > 0.5) { current_animation = &right; printf("here\n"); current_dir = RIGHT; }
+	if (player_dir.x > 0.5) { current_animation = &right; current_dir = RIGHT; }
 	else if (player_dir.x < -0.5) { current_animation = &left; current_dir = LEFT; }
 	else if (player_dir.y > 0) { current_animation = &down; current_dir = DOWN; }
 	else if (player_dir.y < 0) { current_animation = &up; current_dir = UP; }
