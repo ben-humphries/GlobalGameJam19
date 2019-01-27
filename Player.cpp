@@ -72,15 +72,17 @@ Player::~Player()
 {
 }
 
-void Player::move(sf::Vector2i move_dir, sf::Time dt)
+void Player::move(sf::Vector2i move_dir, sf::Vector2i anim_priority, sf::Time dt)
 {
 	float speed = 50;
 	AnimatedSprite::move((sf::Vector2f) move_dir * speed * dt.asSeconds());
 
-	if (move_dir.x == -1) { current_animation = left; current_dir = LEFT; }
-	else if (move_dir.x == 1) { current_animation = right; current_dir = RIGHT; }
-	else if (move_dir.y == -1) { current_animation = up; current_dir = UP; }
-	else if (move_dir.y == 1) { current_animation = down; current_dir = DOWN; }
+	if (anim_priority.x == -1) { current_animation = left; current_dir = LEFT; }
+	if (anim_priority.x == 1) { current_animation = right; current_dir = RIGHT; }
+	if (anim_priority.y == -1) { current_animation = up; current_dir = UP; }
+	if (anim_priority.y == 1) { current_animation = down; current_dir = DOWN; }
+
+
 
 	if (move_dir.x == 0 && move_dir.y == 0) {
 		switch (current_dir) {

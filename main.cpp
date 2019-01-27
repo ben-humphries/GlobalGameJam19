@@ -13,6 +13,7 @@ int main()
 {
 	sf::RenderWindow window(sf::VideoMode(SCREEN_SIZE, SCREEN_SIZE), "Global Game Jam 2019");
 
+	sf::Vector2i anim_priority = sf::Vector2i(0, 0);
 
 	sf::Clock clock;
 	while (window.isOpen())
@@ -22,6 +23,21 @@ int main()
 		{
 			if (event.type == sf::Event::Closed)
 				window.close();
+			if (event.type == sf::Event::KeyPressed) {
+
+				if (event.key.code == sf::Keyboard::W) {
+					anim_priority = sf::Vector2i(0, -1);
+				}
+				else if (event.key.code == sf::Keyboard::A) {
+					anim_priority = sf::Vector2i(-1, 0);
+				}
+				else if (event.key.code == sf::Keyboard::S) {
+					anim_priority = sf::Vector2i(0, 1);
+				}
+				else if (event.key.code == sf::Keyboard::D) {
+					anim_priority = sf::Vector2i(1, 0);
+				}
+			}
 		}
 
 		sf::Time dt = clock.restart();
@@ -40,7 +56,8 @@ int main()
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
 			to_move.x += 1;
 		}
-		player.move(to_move, dt);
+
+		player.move(to_move, anim_priority, dt);
 
 
 		//UPDATE

@@ -15,7 +15,7 @@ public:
 	Player();
 	~Player();
 
-	void move(sf::Vector2i move_dir, sf::Time dt);
+	void move(sf::Vector2i move_dir, sf::Vector2i anim_priority, sf::Time dt);
 
 private:
 	sf::Texture player_spritesheet;
