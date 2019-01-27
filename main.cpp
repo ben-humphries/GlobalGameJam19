@@ -47,7 +47,7 @@ int selected = PLAY;
 int main()
 {
 	//INIT
-	sf::RenderWindow window(sf::VideoMode(SCREEN_SIZE, SCREEN_SIZE), "Global Game Jam 2019");
+	sf::RenderWindow window(sf::VideoMode(SCREEN_SIZE, SCREEN_SIZE), "Home Means Fighting Off The Zombie Apocalpyse");
 
 	sf::Vector2i anim_priority = sf::Vector2i(0, 0);
 
