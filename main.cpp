@@ -4,8 +4,12 @@
 
 #define I(x, y, w, h) sf::IntRect(x, y, w, h)
 
+#define SCREEN_SIZE 800.f
+#define GAME_SIZE 64.f
+
 //VARIABLE DEFINITIONS
 Player player = Player();
+sf::View view(sf::FloatRect(0, 0, GAME_SIZE, GAME_SIZE));
 
 int main()
 {
@@ -27,7 +31,7 @@ int main()
 
 		player.play(*up);
 	}
-	sf::RenderWindow window(sf::VideoMode(200, 200), "Global Game Jam 2019");
+	sf::RenderWindow window(sf::VideoMode(SCREEN_SIZE, SCREEN_SIZE), "Global Game Jam 2019");
 
 
 	sf::Clock clock;
@@ -46,6 +50,7 @@ int main()
 		player.update(dt);
 
 		//DRAW
+		window.setView(view);
 		window.clear();
 		window.draw(player);
 		window.display();
