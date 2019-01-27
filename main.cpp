@@ -28,7 +28,7 @@ int main()
 	player.setPosition(GAME_SIZE / 2, GAME_SIZE / 2);
 
 	//MAIN LOOP
-	float elapsedTime = 0.f;
+	float elapsedTime = 10.f;
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -52,7 +52,6 @@ int main()
 				}
 
 				else if (event.key.code == sf::Keyboard::Space) {
-					printf("shooting\n");
 					Bullet b = Bullet(player.current_dir, player.getPosition());
 					bullets.push_back(b);
 				}
@@ -82,8 +81,20 @@ int main()
 
 		//UPDATE
 
-		if (elapsedTime >= 1.0f) {
+		if (elapsedTime >= 0.3f) {
 			Zombie * zombie = new Zombie(&player);
+			sf::Vector2f position;
+
+			if (random_float(0, 1) > 0.5) {
+				position.x = random_float(0, GAME_SIZE);
+				position.y = 0;
+			}
+			else {
+				position.x = 0;
+				position.y = random_float(0, GAME_SIZE);
+			}
+
+			zombie->setPosition(position);
 			zombies.push_back(*zombie);
 			elapsedTime = 0;
 		}
@@ -116,7 +127,6 @@ int main()
 				}
 				++z_it;
 			}
-
 			++it;
 		}
 

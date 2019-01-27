@@ -47,13 +47,14 @@ Zombie::Zombie(Player * target) : AnimatedSprite(sf::seconds(FRAME_RATE))
 	right.addFrame(I(63, 31, 9, 15));
 
 
-	current_animation = left; //idle
+	current_animation = &left; //idle
 	current_dir = DOWN;
-	play(current_animation);
+	play(*current_animation);
 }
 
 void Zombie::update(sf::Time dt)
 {
+
 	AnimatedSprite::update(dt);
 
 	float speed = 20;
@@ -61,10 +62,12 @@ void Zombie::update(sf::Time dt)
 	sf::Vector2f player_dir = normalize(target->getPosition() - this->getPosition());
 	move(player_dir * speed * dt.asSeconds());
 
-	if (player_dir.x > 0.5) { current_animation = right; current_dir = RIGHT; }
-	else if (player_dir.x < -0.5) { current_animation = left; current_dir = LEFT; }
-	else if (player_dir.y > 0) { current_animation = down; current_dir = DOWN; }
-	else if (player_dir.y < 0) { current_animation = up; current_dir = UP; }
+	if (player_dir.x > 0.5) { current_animation = &right; printf("here\n"); current_dir = RIGHT; }
+	else if (player_dir.x < -0.5) { current_animation = &left; current_dir = LEFT; }
+	else if (player_dir.y > 0) { current_animation = &down; current_dir = DOWN; }
+	else if (player_dir.y < 0) { current_animation = &up; current_dir = UP; }
+
+	play(*current_animation);
 
 }
 

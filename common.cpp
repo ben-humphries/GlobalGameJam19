@@ -28,3 +28,8 @@ bool colliding(Collider col1, Collider col2, sf::Vector2f pos1, sf::Vector2f pos
 	return false;
 
 }
+
+float random_float(float a, float b)
+{
+	return ((b - a) * ((float)rand() / RAND_MAX)) + a;
+}

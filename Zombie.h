@@ -18,7 +18,7 @@ public:
 private:
 	sf::Texture zombie_spritesheet;
 	Animation up, down, left, right;
-	Animation current_animation;
+	Animation * current_animation;
 
 	Direction current_dir;
 

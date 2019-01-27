@@ -16,3 +16,5 @@ enum Direction {
 sf::Vector2f normalize(sf::Vector2f v);
 
 bool colliding(Collider col1, Collider col2, sf::Vector2f pos1, sf::Vector2f pos2);
+
+float random_float(float a, float b);
