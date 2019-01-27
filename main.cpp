@@ -24,12 +24,30 @@ int main()
 
 		Animation * up = new Animation();
 		up->setSpriteSheet(player_spritesheet);
-		up->addFrame(I( 0, 0, 5, 16));
-		up->addFrame(I( 5, 0, 5, 16));
-		up->addFrame(I(10, 0, 5, 16));
-		up->addFrame(I(15, 0, 5, 16));
+		up->addFrame(I( 0, 0, 5, 15));
+		up->addFrame(I( 5, 0, 5, 15));
+		up->addFrame(I(10, 0, 5, 15));
+		up->addFrame(I(15, 0, 5, 15));
 
-		player.play(*up);
+		Animation * down = new Animation();
+		down->setSpriteSheet(player_spritesheet);
+		down->addFrame(I( 0, 15, 5, 15));
+		down->addFrame(I( 5, 15, 5, 15));
+		down->addFrame(I(10, 15, 5, 15));
+		down->addFrame(I(15, 15, 5, 15));
+
+		Animation * right = new Animation();
+		right->setSpriteSheet(player_spritesheet);
+		right->addFrame(I( 0, 30, 9, 15));
+		right->addFrame(I(10, 30, 9, 15));
+		right->addFrame(I(20, 30, 9, 15));
+		right->addFrame(I(30, 30, 9, 15));
+		right->addFrame(I(40, 30, 9, 15));
+		right->addFrame(I(50, 30, 9, 15));
+		right->addFrame(I(60, 30, 9, 15));
+		right->addFrame(I(70, 30, 9, 15));
+
+		player.play(*right);
 	}
 	sf::RenderWindow window(sf::VideoMode(SCREEN_SIZE, SCREEN_SIZE), "Global Game Jam 2019");
 
